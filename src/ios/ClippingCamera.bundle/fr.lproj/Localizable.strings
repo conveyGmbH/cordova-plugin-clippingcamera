@@ -1,0 +1,12 @@
+/*
+ Localizable.strings
+ CDVCamera
+ 
+ Created by convey on 24.06.16.
+ */
+
+"NoAccess" = "L'accès à l’appareil photo est pas autorisé; S'il vous plaît autoriser dans les Réglages pour continuer.";
+"OK"       = "OK";
+"Cancel"   = "Annuler";
+"Settings" = "Réglages";
+"Videos"   = "Vidéos";

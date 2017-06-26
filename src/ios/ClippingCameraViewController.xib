@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClippingCameraViewController">
+            <connections>
+                <outlet property="cancelButton" destination="BJd-K4-RXd" id="Udl-ME-mx0"/>
+                <outlet property="imageView" destination="I0N-SY-HVq" id="YmS-dO-eaJ"/>
+                <outlet property="switchTorchButton" destination="bd6-GH-dhs" id="hRA-fw-pff"/>
+                <outlet property="takePhotoButton" destination="jDi-nL-EnD" id="5r9-1K-szW"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I0N-SY-HVq">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jDi-nL-EnD" userLabel="Start Button">
+                    <rect key="frame" x="293" y="300" width="66" height="66"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <state key="normal" image="icons8Shutter.png"/>
+                    <state key="highlighted" image="icons8ShutterHilite.png"/>
+                    <connections>
+                        <action selector="takeFoto:" destination="-1" eventType="touchUpInside" id="Lm3-7d-whU"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bd6-GH-dhs" userLabel="Switch Torch Button">
+                    <rect key="frame" x="315" y="40" width="25" height="25"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" image="icons8FlashOn.png"/>
+                    <connections>
+                        <action selector="switchTorch:" destination="-1" eventType="touchUpInside" id="ldK-BD-xpS"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BJd-K4-RXd" userLabel="Cancel Button">
+                    <rect key="frame" x="275" y="607" width="100" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <state key="normal" title="Cancel"/>
+                    <connections>
+                        <action selector="cancelFoto:" destination="-1" eventType="touchUpInside" id="UbX-xr-P78"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icons8FlashOn.png" width="75" height="75"/>
+        <image name="icons8Shutter.png" width="100" height="100"/>
+        <image name="icons8ShutterHilite.png" width="100" height="100"/>
+    </resources>
+</document>
