@@ -6,7 +6,7 @@
 //
 //
 
-#import <Cordova/CDV.h>
+#import <Cordova/CDVPlugin+Resources.h>
 
 // Import the CustomCameraViewController class
 #import "ClippingCameraViewController.h"
@@ -18,6 +18,7 @@
 
 // Create and override some properties and methods
 -(void) returnCapturedImage:(NSString*)base64Image;
+-(void) returnWithError:(NSString*)errorString;
 
 @property (strong, nonatomic) ClippingCameraViewController* theCameraViewController;
 @property (strong, nonatomic) CDVInvokedUrlCommand* latestCommand;

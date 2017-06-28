@@ -21,57 +21,65 @@
     Mat theMatImage;
 }
 
-#warning brauchts das hier?
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-//        // Instantiate the UIImagePickerController instance
-//        self.picker = [[UIImagePickerController alloc] init];
-//        
-//        // Configure the UIImagePickerController instance
-//        self.picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        self.picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-//        self.picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-//        self.picker.showsCameraControls = NO;
-//        
-//        // Make us the delegate for the UIImagePickerController
-//        self.picker.delegate = self;
-//        
-//        // Set the frames to be full screen
-//        CGRect screenFrame = [[UIScreen mainScreen] bounds];
-//        self.view.frame = screenFrame;
-//        self.picker.view.frame = screenFrame;
-//        
-//        // Set this VC's view as the overlay view for the UIImagePickerController
-//        self.picker.cameraOverlayView = self.view;
-    }
-    return self;
-}
-
-#warning oder das? oder beides?
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-    
-    self.videoCamera = [[CvVideoCamera alloc] initWithParentView:imageView];
-    self.videoCamera.delegate = self;
-    self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
-#warning wie wär's beim iPhone4? muß es überhaupt noch unterstützt werden?!
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset640x480;
-    } else {
-        self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
+    BOOL hasAccess = true;
+    ClippingCamera *myPlugin = self.plugin;
+
+    // Validate the app has permission to access the camera
+    if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)]) {
+        AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+        if (authStatus == AVAuthorizationStatusDenied ||
+            authStatus == AVAuthorizationStatusRestricted) {
+            hasAccess = false;
+            // If iOS 8+, offer a link to the Settings app
+            NSString *currentSysVers = [[UIDevice currentDevice] systemVersion]
+            ,        *settingsButton = ([currentSysVers compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending) ?
+            [myPlugin pluginLocalizedString:@"Settings"] : nil;
+            
+            // Denied; show an alert
+            [[[UIAlertView alloc] initWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
+                                        message:[myPlugin pluginLocalizedString:@"NoAccess"]
+                                       delegate:self
+                              cancelButtonTitle:[myPlugin pluginLocalizedString:@"OK"]
+                              otherButtonTitles:settingsButton, nil] show];
+        }
     }
-    self.videoCamera.defaultFPS = 30;
-    self.videoCamera.grayscaleMode = NO;
     
-    inputDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if (hasAccess) {
+        currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(deviceOrientationDidChange:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+        
+        self.videoCamera = [[CvVideoCamera alloc] initWithParentView:imageView];
+        self.videoCamera.delegate = self;
+        self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
+        self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
+#warning wie wär's beim iPhone4? muß es überhaupt noch unterstützt werden?!
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset640x480;
+        } else {
+            self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
+        }
+        self.videoCamera.defaultFPS = 30;
+        self.videoCamera.grayscaleMode = NO;
+        
+        inputDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        
+        // initialize the buttons - explicitly
+        [takePhotoButton setImage:[myPlugin pluginImageResource:@"icons8Shutter"] forState:UIControlStateNormal];
+        [takePhotoButton setImage:[myPlugin pluginImageResource:@"icons8ShutterHilite"] forState:UIControlStateHighlighted];
+        [cancelButton setTitle:[myPlugin pluginLocalizedString:@"Cancel"] forState:UIControlStateNormal];
+        // switchTorchButton see in startCamera (torch switches off after interface-rotation)
+        
+        [self performSelector:@selector(startCamera) withObject:Nil afterDelay:0.01];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -93,19 +101,25 @@
 }
 
 
-#warning die Methode braucht's (so) im PlugIn nicht (den Kamera-Start und den Torch-Btn halt irgendwie)
-- (void)startCamera {
-#warning "Cancel"-Button sprachspezifisch
-    switchTorchButton.hidden = !inputDevice.torchAvailable;
-    [self.videoCamera start];
-}
-
-
 #pragma mark - UI Actions
+
+// camera permission alert
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // If Settings button (on iOS 8), open the settings app
+    if (buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }
+    
+    // Dismiss the view
+    [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+    
+    [self.plugin returnWithError:[self.plugin pluginLocalizedString:@"NoAccess"]];
+}
 
 - (IBAction)cancelFoto:(id)sender {
     [self.videoCamera stop];
-#warning hier noch "Abbrechen"-Übergabe ans Cordova
+    [self.plugin returnWithError:@"User did cancel"];
 }
 
 - (IBAction)switchTorch:(id)sender {
@@ -116,8 +130,7 @@
     [inputDevice unlockForConfiguration];
     
     NSString *btnName = tm == AVCaptureTorchModeOn ? @"icons8FlashOff" : @"icons8FlashOn";
-#warning PlugIn: Icon setzen per PlugIn-spezifischem pluginImageResource
-    [switchTorchButton setImage:[UIImage imageNamed:btnName] forState:UIControlStateNormal];
+    [switchTorchButton setImage:[self.plugin pluginImageResource:btnName] forState:UIControlStateNormal];
 }
 
 - (IBAction)takeFoto:(id)sender {
@@ -128,8 +141,7 @@
     [self rectifyAndCut];
     UIImage *finalImage = MatToUIImage(theMatImage);
     
-#warning hier fehlt noch die Option für die Bild-Qualität
-    NSData *imgAsData = UIImageJPEGRepresentation(finalImage, 0);//[options.quality floatValue] / 100.0f);
+    NSData *imgAsData = UIImageJPEGRepresentation(finalImage, [self.pictureQuality floatValue] / 100.0f);
     [self.plugin returnCapturedImage:[imgAsData base64EncodedStringWithOptions:0]];
 }
 
@@ -150,16 +162,24 @@
         [self.videoCamera stop];
         self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
         
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [self positionTheButtons];
-        }
-        
-        [self performSelector:@selector(reStartCamera) withObject:Nil afterDelay:0.01];
+        [self performSelector:@selector(startCamera) withObject:Nil afterDelay:0.01];
     }
 }
 
-- (void)reStartCamera
+- (void)startCamera
 {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self positionTheButtons];
+    }
+    // the first time
+    if (takePhotoButton.hidden) {
+        takePhotoButton.hidden = false;
+        switchTorchButton.hidden = !inputDevice.torchAvailable;
+        cancelButton.hidden = false;
+    }
+    // after orientation-changes the torch is off
+    [switchTorchButton setImage:[self.plugin pluginImageResource:@"icons8FlashOn"] forState:UIControlStateNormal];
+    
     [self.videoCamera start];
 }
 

@@ -24,6 +24,7 @@ using namespace cv;
     IBOutlet UIButton *cancelButton;
 }
 
+@property (strong) NSNumber* pictureQuality;
 @property (strong, nonatomic) ClippingCamera* plugin;
 @property (nonatomic, retain) CvVideoCamera* videoCamera;
 

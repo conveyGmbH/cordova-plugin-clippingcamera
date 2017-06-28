@@ -36,15 +36,6 @@
          <source-file src="src/ios/ClippingCameraViewController.mm" />
          <source-file src="src/ios/ClippingCameraViewController.xib" />
 
-         <framework src="Accelerate.framework" />
-         <framework src="AVFoundation.framework" />
-         <framework src="AssetsLibrary.framework" />
-         <framework src="CoreGraphics.framework" />
-         <framework src="CoreImage.framework" />
-         <framework src="CoreMedia.framework" />
-         <framework src="CoreVideo.framework" />
-         <framework src="Foundation.framework" />
-         <framework src="QuartzCore.framework" />
          <framework src="src/ios/opencv2.framework" custom="true" />
 
          <preference name="CAMERA_USAGE_DESCRIPTION" default="Captured photo will be sent to the server." />
