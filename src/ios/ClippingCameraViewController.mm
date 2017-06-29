@@ -19,6 +19,7 @@
     UIDeviceOrientation currentOrientation;
     std::vector<cv::Point2f> thePolygon;
     Mat theMatImage;
+    int emptyCount;
 }
 
 - (void)viewDidLoad {
@@ -61,11 +62,11 @@
         self.videoCamera.delegate = self;
         self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
         self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
-#warning wie wär's beim iPhone4? muß es überhaupt noch unterstützt werden?!
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset640x480;
         } else {
             self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
+            // for iPhone4 there maybe should be another value here?
         }
         self.videoCamera.defaultFPS = 30;
         self.videoCamera.grayscaleMode = NO;
@@ -249,13 +250,17 @@
         approxPolyDP(contours[idx_max], approx, 0.02 * peri, true);
         if (approx.size() == 4) {
             thePolygon = approx;
+            emptyCount = 0;
         } else {
             approx = thePolygon;
-            thePolygon.clear();
+            emptyCount++;
         }
     } else {
         approx = thePolygon;
-        thePolygon.clear();
+        emptyCount++;
+    }
+    if (emptyCount > 5) {
+	thePolygon.clear();
     }
     
     if (approx.size() > 0) {

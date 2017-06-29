@@ -21,7 +21,7 @@
     
     // Make the overlay view controller.
     self.theCameraViewController = [[ClippingCameraViewController alloc] initWithNibName:@"ClippingCameraViewController" bundle:nil];
-    self.theCameraViewController.pictureQuality = [command argumentAtIndex:0 withDefault:@(50)];
+    self.theCameraViewController.pictureQuality = [command argumentAtIndex:0 withDefault:@(100)];
     self.theCameraViewController.plugin = self;
     
     // Display the view.  This will "slide up" a modal view from the bottom of the screen.
