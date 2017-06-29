@@ -13,10 +13,12 @@
  */
 
     var clippingCamera = {
-        getPicture: function(success, failure. options){
+        getPicture: function(success, failure, options){
             argscheck.checkArgs('fFO', 'ClippingCamera.getPicture', arguments);
+            options = options || {};
             var getValue = argscheck.getValue;
 
+            var quality = getValue(options.quality, 100);
             var convertToGrayscale = !!options.convertToGrayscale;
             var dontClip = !!options.dontClip;
 
