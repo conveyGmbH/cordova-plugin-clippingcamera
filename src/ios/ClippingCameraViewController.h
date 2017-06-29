@@ -25,6 +25,9 @@ using namespace cv;
 }
 
 @property (strong) NSNumber* pictureQuality;
+@property (assign) BOOL convertToGrayscale;
+@property (assign) BOOL dontClip;
+
 @property (strong, nonatomic) ClippingCamera* plugin;
 @property (nonatomic, retain) CvVideoCamera* videoCamera;
 

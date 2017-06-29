@@ -19,10 +19,14 @@
     // Save the CDVInvokedUrlCommand as a property.  We will need it later.
     self.latestCommand = command;
     
-    // Make the overlay view controller.
+    // Make the camera view controller.
     self.theCameraViewController = [[ClippingCameraViewController alloc] initWithNibName:@"ClippingCameraViewController" bundle:nil];
-    self.theCameraViewController.pictureQuality = [command argumentAtIndex:0 withDefault:@(100)];
-    self.theCameraViewController.plugin = self;
+    // and set it's properties from the start-parameters
+    ClippingCameraViewController *ccvc = self.theCameraViewController;
+    ccvc.pictureQuality = [command argumentAtIndex:0 withDefault:@(100)];
+    ccvc.convertToGrayscale = [[command argumentAtIndex:1 withDefault:@(NO)] boolValue];
+    ccvc.dontClip = [[command argumentAtIndex:2 withDefault:@(NO)] boolValue];
+    ccvc.plugin = self;
     
     // Display the view.  This will "slide up" a modal view from the bottom of the screen.
     [self.viewController presentViewController:self.theCameraViewController animated:YES completion:nil];

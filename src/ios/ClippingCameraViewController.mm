@@ -2,7 +2,7 @@
 //  ClippingCameraViewController.m
 //  BusiCdAutoClip
 //
-//  Created by Manfred WÃ¼hr on 23.06.17.
+//  Created by Manfred Wühr on 23.06.17.
 //
 //
 
@@ -139,7 +139,9 @@
     
     [self.videoCamera stop];
     
-    [self rectifyAndCut];
+    if (!self.dontClip) {
+        [self rectifyAndCut];
+    }
     UIImage *finalImage = MatToUIImage(theMatImage);
     
     NSData *imgAsData = UIImageJPEGRepresentation(finalImage, [self.pictureQuality floatValue] / 100.0f);
@@ -220,7 +222,12 @@
     , imgHeight = image.size().height;
     
     // keep a *copy* of it for later use (right in the then needed format)
-    cvtColor(image, theMatImage, COLOR_BGR2RGB);
+    if (self.convertToGrayscale) {
+        cvtColor(image, theMatImage, COLOR_BGR2GRAY);
+    }
+    else {
+        cvtColor(image, theMatImage, COLOR_BGR2RGB);
+    }
     
     // convert it
     cvtColor(image, imageWork, COLOR_BGR2GRAY);
@@ -273,7 +280,9 @@
         std::vector<std::vector<cv::Point> > outContours2;
         outContours2.insert(outContours2.begin(), approx2);
         
-        drawContours(image, outContours2, -1, Scalar(0, 255, 0), 2);
+        if (!self.dontClip) {
+            drawContours(image, outContours2, -1, Scalar(0, 255, 0), 2);
+        }
     }
 }
 
