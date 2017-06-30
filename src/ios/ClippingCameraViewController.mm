@@ -17,6 +17,7 @@
 {
     AVCaptureDevice *inputDevice;
     UIDeviceOrientation currentOrientation;
+    
     std::vector<cv::Point2f> thePolygon;
     Mat theMatImage;
     int emptyCount;
@@ -50,7 +51,11 @@
     }
     
     if (hasAccess) {
-        currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        inputDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        // hiermit bei liegendem Gerät, wo die Orientation falsch/unbrauchbar 5 = UIDeviceOrientationFaceUp = "flach liegend"
+        // die eigentlich richtige Orientation einstellen, damit unten die Buttons richtig gesetzt werden - und hier (paar Zeilen weiter)
+        // die VideoOrientation der Kamera richtig gesetzt werden ... sollte (funktioniert so(?) nicht)
+//        currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
         
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -61,7 +66,13 @@
         self.videoCamera = [[CvVideoCamera alloc] initWithParentView:imageView];
         self.videoCamera.delegate = self;
         self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
-        self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
+        // damit sollte eigentlich die VideoOrientation der Kamera richtig gesetzt werden (geht bei explizitem Geräte-Drehen unte ja auch(!)
+        // reicht hier nicht
+//        self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
+        // auch die folgenden Befehle, in welcher Kombination auch immer, tun's nicht
+//        [self.videoCamera adjustLayoutToInterfaceOrientation:currentOrientation];
+//        [self.videoCamera updateOrientation];
+//        self.videoCamera.rotateVideo = YES;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset640x480;
         } else {
@@ -70,8 +81,6 @@
         }
         self.videoCamera.defaultFPS = 30;
         self.videoCamera.grayscaleMode = NO;
-        
-        inputDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         
         // initialize the buttons - explicitly
         [takePhotoButton setImage:[myPlugin pluginImageResource:@"icons8Shutter"] forState:UIControlStateNormal];
@@ -164,6 +173,8 @@
         
         [self.videoCamera stop];
         self.videoCamera.defaultAVCaptureVideoOrientation = (AVCaptureVideoOrientation)currentOrientation;
+        // brauchts den?
+        [self.videoCamera adjustLayoutToInterfaceOrientation:currentOrientation];
         
         [self performSelector:@selector(startCamera) withObject:Nil afterDelay:0.01];
     }
