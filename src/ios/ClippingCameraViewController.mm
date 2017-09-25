@@ -243,7 +243,7 @@
     // convert it
     cvtColor(image, imageWork, COLOR_BGR2GRAY);
     GaussianBlur(imageWork, imageWork, cv::Size(5, 5), 0);
-    Canny(imageWork, imageWork, 80, 200);
+    Canny(imageWork, imageWork, 60, 180);
     
     // extract the contours
     std::vector<std::vector<cv::Point> > contours;

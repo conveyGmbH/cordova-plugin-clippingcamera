@@ -58,7 +58,28 @@
          <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
              <string>(not used in this App!!)</string>
          </config-file>
-
      </platform>
-
+     <platform name="windows">
+         <js-module src="src/windows/ClippingCameraProxy.js" name="ClippingCameraProxy">
+             <merges target=""/>
+         </js-module>
+         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+             <DeviceCapability Name="webcam"/>
+         </config-file>
+         <config-file target="package.appxmanifest" parent="/Package/Extensions">
+             <Extension Category="windows.activatableClass.inProcessServer">
+                <InProcessServer>
+                    <Path>ClippingCamera.dll</Path>
+                    <ActivatableClass ActivatableClassId="ClippingCamera.ImageClipping" ThreadingModel="both" />
+                </InProcessServer>
+             </Extension>
+         </config-file>
+         <config-file target="CordovaApp.jsproj" parent="/Project">
+             <ImportGroup Label="PropertySheets">
+                 <Import Project="..\..\plugins\cordova-plugin-clippingcamera\src\windows\lib\ClippingCamera\opencvDeploy.props" />
+             </ImportGroup>
+         </config-file>
+         <framework src="src/windows/lib/ClippingCamera/ClippingCamera.vcxproj" custom="true" type="projectReference"/>
+         <asset src="src/windows/assets/plugin-clippingCamera.css" target="css/plugin-clippingCamera.css"/>
+     </platform>
 </plugin>

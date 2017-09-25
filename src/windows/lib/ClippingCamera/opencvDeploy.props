@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <!--debug suffix for OpenCV dlls and libs -->
+    <DebugSuffix Condition="'$(Configuration)'=='Debug'">d</DebugSuffix>
+    <DebugSuffix Condition="'$(Configuration)'!='Debug'"></DebugSuffix>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(OutputPath)opencv_core310$(DebugSuffix).dll">
+      <Link>opencv_core310$(DebugSuffix).dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Content>
+    <Content Include="$(OutputPath)opencv_imgproc310$(DebugSuffix).dll">
+      <Link>opencv_imgproc310$(DebugSuffix).dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Content>
+    <Content Include="$(OutputPath)opencv_imgcodecs310$(DebugSuffix).dll">
+      <Link>opencv_imgcodecs310$(DebugSuffix).dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)$(Platform)\$(Configuration)\ClippingCamera\" />
+  </ItemGroup>
+</Project>

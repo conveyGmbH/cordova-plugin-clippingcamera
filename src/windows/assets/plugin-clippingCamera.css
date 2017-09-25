@@ -1,0 +1,105 @@
+﻿.camera-ui-wrap {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: 0 0 black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999999;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.camera-ui-preview {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.camera-ui-app-bar {
+    height: 48px;
+    width: 100%;
+    padding-top: 4px;
+    z-index: 9999998;
+    text-align: center;
+    user-select: none;
+    position: absolute;
+    bottom: 0px;
+    background-color: rgba(0,0,0,0.2);
+}
+
+.app-bar-action {
+    width: 40px;
+    height: 40px;
+    margin: 0 20px;
+    font-family: "Segoe UI Symbol";
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: default;
+}
+.action-photo {
+    font-size: 32px;
+}
+
+@media all and (orientation: landscape) {
+    .camera-ui-app-bar {
+        text-align: right;
+    }
+    /*
+    .app-bar-action {
+        float: right;
+    }
+    */
+    .action-close, .action-settings {
+        margin-top: 22px;
+    }
+}
+
+@media (max-width:499px) {
+    .action-close {
+        display: none;
+    }
+}
+
+.action-close::before {
+    content: "\E112";
+    /* close icon is larger so we re-size it to fit other icons */
+}
+.action-close:hover::before {
+    content: "\E112";
+    color: gray;
+}
+
+.action-settings::before {
+    content: "\E15E";
+    /* close icon is larger so we re-size it to fit other icons */
+}
+.action-settings:hover::before {
+    content: "\E15E";
+    color: gray;
+}
+
+.action-photo::before {
+    content: "\E114";
+    /* close icon is larger so we re-size it to fit other icons */
+}
+.action-photo:hover::before {
+    content: "\E114";
+    color: gray;
+}
+
+.no-zoom {
+    -ms-content-zooming: none;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
