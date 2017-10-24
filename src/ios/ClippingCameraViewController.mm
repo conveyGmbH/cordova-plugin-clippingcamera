@@ -8,6 +8,8 @@
 
 #import "ClippingCamera.h"
 #import "ClippingCameraViewController.h"
+#import <opencv2/imgproc.hpp>
+
 
 @interface ClippingCameraViewController ()
 
