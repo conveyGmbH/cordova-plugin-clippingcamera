@@ -327,11 +327,13 @@ module.exports = {
             capturePreviewFrame,
             navigationButtonsDiv,
             previewMirroring,
+            debugText,
             closeButton,
             settingsButton,
             photoButton,
             capture,
-            camera;
+            camera,
+            videoProps;
 
         // Save call state for suspend/resume
         CameraUI.openCameraCallArgs = {
@@ -348,12 +350,41 @@ module.exports = {
         function getDontClip() {
             return CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[2];
         }
+        function getMaxResolution() {
+            return CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[3];
+        }
+        function getAspectRatio() {
+            var aspectRatio =  0.0;
+            if (CameraUI.openCameraCallArgs.args &&
+                CameraUI.openCameraCallArgs.args[4]) {
+                var strAspectRatio = CameraUI.openCameraCallArgs.args[4];
+                if (typeof strAspectRatio === "string") {
+                    var pos = strAspectRatio.indexOf("/");
+                    if (pos > 0) {
+                        var width = parseInt(strAspectRatio.substr(0, pos));
+                        var height = parseInt(strAspectRatio.substr(pos + 1));
+                        if (width && height) {
+                            aspectRatio = width / height;
+                        }
+                    }
+                }
+            }
+            return aspectRatio;
+        }
+        function getAutoShutter() {
+            return CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[5];
+        }
 
         function updatePreviewForRotation(evt) {
-            if (!capture) {
+            var resizeLater = function() {
+                WinJS.Promise.timeout(50).then(function() {
+                    resizePreview();
+                });
                 return WinJS.Promise.as();
             }
-
+            if (!capture) {
+                return resizeLater();
+            }
             var displayInformation = (evt && evt.target) || Windows.Graphics.Display.DisplayInformation.getForCurrentView();
             var currentOrientation = displayInformation.currentOrientation;
 
@@ -363,13 +394,19 @@ module.exports = {
             var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
 
             capture.setPreviewRotation(degreesToRotation(rotDegree));
-            return WinJS.Promise.as();
+            return resizeLater();
         }
         function clickPreview() {
             focus();
         }
         function resizePreview() {
-            reposition();
+            var width = document.body.clientWidth;
+            var height = document.body.clientHeight;
+            if (capturePreviewFrame && capturePreviewFrame.style) {
+                capturePreviewFrame.style.width = width.toString() + "px";
+                capturePreviewFrame.style.height = height.toString() + "px";
+                reposition(width, height);
+            }
         }
 
         /**
@@ -406,16 +443,21 @@ module.exports = {
             photoButton = document.createElement("span");
             photoButton.className = "app-bar-action action-photo";
             navigationButtonsDiv.appendChild(photoButton);
-
+            
             //settingsButton = document.createElement("span");
             //settingsButton.className = "app-bar-action action-settings";
             //navigationButtonsDiv.appendChild(settingsButton);
 
             CameraUI.captureCancelled = false;
             closeButton.addEventListener("click", cancelPreview, false);
-            document.addEventListener("backbutton", cancelPreview, false);
+            document.addEventListener("backbutton", cancelPreview, true);
 
             photoButton.addEventListener("click", capturePhoto, false);
+            
+            if (getAutoShutter() &&
+                navigationButtonsDiv && navigationButtonsDiv.style) {
+                navigationButtonsDiv.style.display = "none";
+            }
 
             [capturePreview, navigationButtonsDiv].forEach(function (element) {
                 capturePreviewFrame.appendChild(element);
@@ -432,7 +474,7 @@ module.exports = {
 
                 props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E79}", bDoCapture);
 
-                return capture.clearEffectsAsync(Windows.Media.Capture.MediaStreamType.videoPreview).then(function () {
+                return capture.clearEffectsAsync(Windows.Media.Capture.MediaStreamType.videoPreview).then(function() {
                     if (!getDontClip()) {
                         return capture.addEffectAsync(Windows.Media.Capture.MediaStreamType.videoPreview,
                             'ClippingCamera.ImageClipping',
@@ -441,23 +483,43 @@ module.exports = {
                         return null;
                     }
                 });
+            } else {
+                return WinJS.Promise.as();
             }
-        }
+        };
 
-        function reposition() {
+        function reposition(widthFrame, heightFrame) {
+            if (capturePreviewFrame && capturePreview && capturePreview.style) {
+                var displayInformation = Windows.Graphics.Display.DisplayInformation.getForCurrentView();
 
-            if (!capturePreviewFrame || !capturePreview || capturePreview.paused) {
-                // If the preview is not yet playing, there is no sense in running focus
-                return result;
-            }
+                var currentOrientation = displayInformation.currentOrientation;
+                // Lookup up the rotation degrees.
+                var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
+                var videoWidth = videoProps.width;
+                var videoHeight = videoProps.height;
+                if (videoWidth > 0 && videoHeight > 0) {
+                    var width, height;
+                    switch (rotDegree) {
+                    case 90:
+                    case 270:
+                        width = 2 * widthFrame;
+                        height = Math.floor(width * videoWidth / videoHeight);
+                        break;
+                    default:
+                        height = heightFrame;
+                        width = Math.floor(heightFrame * videoWidth / videoHeight);
+                    }
+                    var left = Math.floor((widthFrame - width) / 2);
+                    var top = Math.floor((heightFrame - height) / 2);
 
-            if (capturePreview.style) {
-                var heightFrame = capturePreviewFrame.clientHeight;
-                var height = capturePreview.clientHeight;
-                var styleHeight = Math.floor((heightFrame - height) / 2).toString() + "px";
-                console.log("heightFrame=" + heightFrame + " height=" + height + " styleHeight=" + styleHeight);
-
-                capturePreview.style.top = styleHeight;
+                    if (heightFrame > 0 && height > 0) {
+                        //console.log("width=" + width + " height=" + height + " left=" + left + " top=" + top);
+                        capturePreview.style.left = left.toString() + "px";
+                        capturePreview.style.top = top.toString() + "px";
+                        capturePreview.style.width = width.toString() + "px";
+                        capturePreview.style.height = height.toString() + "px";
+                    }
+                }
             }
         }
 
@@ -600,7 +662,7 @@ module.exports = {
             .then(function () {
 
                 var controller = capture.videoDeviceController;
-                var videoProps = controller.getMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoPreview);
+                //var videoProps = controller.getMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoPreview);
 
                 var deviceProps = controller.getAvailableMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoPreview);
                 deviceProps = Array.prototype.slice.call(deviceProps);
@@ -611,14 +673,33 @@ module.exports = {
                     // sort properties by resolution
                     return propB.width * propB.height - propA.width * propA.height;
                 });
+                var i;
+                for (i = 0; i < deviceProps.length; i++) {
+                    console.log("deviceProps[" + i + "]: width=" + deviceProps[i].width + " height=" + deviceProps[i].height + " ratio=" + deviceProps[i].width / deviceProps[i].height +
+                        " frameRate=" + deviceProps[i].frameRate.denominator + "/" + deviceProps[i].frameRate.numerator);
+                }
 
-                var preferredProps = deviceProps.filter(function(prop){
-                    // Filter out props whith max 5MP
-                    return prop.width * prop.height <= 5000000;
+                var aspectRatio = getAspectRatio();
+                var maxResolution = getMaxResolution() || 5000000;
+                console.log("aspectRatio=" + aspectRatio + " aspectRatio=" + aspectRatio);
+                var preferredProps = deviceProps.filter(function (prop) {
+                    var bUse = false;
+                    // Filter out props whith desired max res and aspect ratio
+                    if (prop.width && prop.height) {
+                        var area = prop.width * prop.height;
+                        if (area <= maxResolution && (!aspectRatio || (prop.width / prop.height === aspectRatio))) {
+                            bUse = true;
+                        }
+                    }
+                    return bUse;
                 });
+                for (i = 0; i < preferredProps.length; i++) {
+                    console.log("preferredProps[" + i + "]: width=" + preferredProps[i].width + " height=" + preferredProps[i].height + " ratio=" + preferredProps[i].width / preferredProps[i].height);
+                }
 
                 // use maximum resolution otherwise
                 videoProps = preferredProps[0] || deviceProps[0];
+                console.log("videoProps.width=" + videoProps.width + " height=" + videoProps.height);
 
                 return controller.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, videoProps)
                 .then(function () {
@@ -638,7 +719,7 @@ module.exports = {
                 // Insert preview frame and controls into page
                 document.body.appendChild(capturePreviewFrame);
 
-                reposition();
+                resizePreview();
                 disableZoomAndScroll();
 
                 return setupFocus(captureSettings.capture.videoDeviceController.focusControl)
@@ -647,30 +728,33 @@ module.exports = {
                     return updatePreviewForRotation();
                 })
                 .then(function () {
-
                     if (!Windows.Media.Devices.CameraStreamState) {
                         // CameraStreamState is available starting with Windows 10 so skip this check for 8.1
                         // https://msdn.microsoft.com/en-us/library/windows/apps/windows.media.devices.camerastreamstate
                         return WinJS.Promise.as();
                     }
-
                     function checkCameraStreamState() {
                         if (capture.cameraStreamState !== Windows.Media.Devices.CameraStreamState.streaming) {
-
                             // Using loop as MediaCapture.CameraStreamStateChanged does not fire with CameraStreamState.streaming state.
                             return WinJS.Promise.timeout(CAMERA_STREAM_STATE_CHECK_RETRY_TIMEOUT)
                             .then(function () {
                                 return checkCameraStreamState();
                             });
                         }
-
                         return WinJS.Promise.as();
                     }
-
                     // Ensure CameraStreamState is Streaming
                     return checkCameraStreamState();
                 })
                 .then(function () {
+                    WinJS.Promise.timeout(CHECK_PLAYING_TIMEOUT).then(function () {
+                        resizePreview();
+                        if (getAutoShutter()) {
+                            WinJS.Promise.timeout(getAutoShutter()).then(function() {
+                                capturePhoto();
+                            });
+                        }
+                    });
                     return captureSettings;
                 });
             });

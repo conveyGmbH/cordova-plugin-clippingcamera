@@ -21,8 +21,11 @@
             var quality = getValue(options.quality, 100);
             var convertToGrayscale = !!options.convertToGrayscale;
             var dontClip = !!options.dontClip;
+            var maxResolution = options.maxResolution;
+            var aspectRatio = options.aspectRatio;
+            var autoShutter = options.autoShutter;
 
-            var args = [quality, convertToGrayscale, dontClip];
+            var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter];
 
             exec(success, failure, "ClippingCamera", "openCamera", args);
         }
