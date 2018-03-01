@@ -5,7 +5,7 @@
     <!--debug suffix for OpenCV dlls and libs -->
     <DebugSuffix Condition="'$(Configuration)'=='Debug'">d</DebugSuffix>
     <DebugSuffix Condition="'$(Configuration)'!='Debug'"></DebugSuffix>
-    <InstallPath>$(ProjectDir)\..\..\plugins\cordova-plugin-clippingcamera\src\windows\lib\install\bin\$(Platform)\</InstallPath>
+    <InstallPath>$(ProjectDir)\..\..\plugins\cordova-plugin-clippingcamera\src\windows\lib\install\bin_wp\$(Platform)\</InstallPath>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="$(InstallPath)opencv_core310$(DebugSuffix).dll">
