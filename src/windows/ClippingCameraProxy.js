@@ -444,7 +444,7 @@ module.exports = {
             photoButton = document.createElement("span");
             photoButton.className = "app-bar-action action-photo";
             navigationButtonsDiv.appendChild(photoButton);
-            
+
             //settingsButton = document.createElement("span");
             //settingsButton.className = "app-bar-action action-settings";
             //navigationButtonsDiv.appendChild(settingsButton);
@@ -454,11 +454,11 @@ module.exports = {
             document.addEventListener("backbutton", cancelPreview, true);
 
             photoButton.addEventListener("click", capturePhoto, false);
-            
+
             if (getAutoShutter() &&
                 navigationButtonsDiv && navigationButtonsDiv.style) {
                 navigationButtonsDiv.style.display = "none";
-                cancelPromise = WinJS.Promise.timeout(60).then(cancelPreview);
+                cancelPromise = WinJS.Promise.timeout(60000).then(cancelPreview);
             }
 
             [capturePreview, navigationButtonsDiv].forEach(function (element) {
