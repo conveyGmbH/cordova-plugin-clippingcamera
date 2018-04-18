@@ -333,7 +333,8 @@ module.exports = {
             photoButton,
             capture,
             camera,
-            videoProps;
+            videoProps,
+            cancelPromise;
 
         // Save call state for suspend/resume
         CameraUI.openCameraCallArgs = {
@@ -457,6 +458,7 @@ module.exports = {
             if (getAutoShutter() &&
                 navigationButtonsDiv && navigationButtonsDiv.style) {
                 navigationButtonsDiv.style.display = "none";
+                cancelPromise = WinJS.Promise.timeout(60).then(cancelPreview);
             }
 
             [capturePreview, navigationButtonsDiv].forEach(function (element) {
@@ -764,6 +766,10 @@ module.exports = {
          * Removes preview frame and corresponding objects from window
          */
         function destroyPreview() {
+            if (cancelPromise) {
+                cancelPromise.cancel();
+                cancelPromise = null;
+            }
             var promise = WinJS.Promise.as();
 
             Windows.Graphics.Display.DisplayInformation.getForCurrentView().removeEventListener("orientationchanged", updatePreviewForRotation, false);
