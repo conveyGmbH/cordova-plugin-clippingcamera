@@ -24,8 +24,10 @@
             var maxResolution = options.maxResolution;
             var aspectRatio = options.aspectRatio;
             var autoShutter = options.autoShutter;
+            var appBarSize = options.appBarSize;
+            var appBarText = options.appBarText;
 
-            var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter];
+            var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter, appBarSize, appBarText];
 
             exec(success, failure, "ClippingCamera", "openCamera", args);
         }

@@ -41,7 +41,7 @@
     margin: 0 20px;
     font-family: "Segoe UI Symbol";
     color: white;
-    font-size: 14px;
+    font-size: 24px;
     text-align: center;
     cursor: default;
 }
@@ -49,17 +49,30 @@
     font-size: 32px;
 }
 
+.action-text {
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+}
+
 @media all and (orientation: landscape) {
-    .camera-ui-app-bar {
-        text-align: right;
-    }
     /*
     .app-bar-action {
         float: right;
     }
-    */
     .action-close, .action-settings {
         margin-top: 22px;
+    }
+    */
+    .action-photo {
+        display: block;
+        right: 0;
+    }
+    .action-close {
+        font-size: 32px;
+        display: block;
+        left: 0;
     }
 }
 
@@ -70,11 +83,11 @@
 }
 
 .action-close::before {
-    content: "\E112";
+    content: "\E0BA";
     /* close icon is larger so we re-size it to fit other icons */
 }
 .action-close:hover::before {
-    content: "\E112";
+    content: "\E2A8";
     color: gray;
 }
 

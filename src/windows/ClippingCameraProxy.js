@@ -375,6 +375,21 @@ module.exports = {
         function getAutoShutter() {
             return CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[5];
         }
+        function getAppBarSize() {
+            if (CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[6]) {
+                if (typeof CameraUI.openCameraCallArgs.args[6] === "string") {
+                    return parseInt(CameraUI.openCameraCallArgs.args[6]);
+                }
+                return CameraUI.openCameraCallArgs.args[6];
+            }
+            return null;
+        }
+        function getAppBarText() {
+            if (CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[7]) {
+                return CameraUI.openCameraCallArgs.args[7];
+            }
+            return null;
+        }
 
         function updatePreviewForRotation(evt) {
             var resizeLater = function() {
@@ -441,6 +456,14 @@ module.exports = {
             closeButton.className = "app-bar-action action-close";
             navigationButtonsDiv.appendChild(closeButton);
 
+            var appBarText = getAppBarText();
+            if (appBarText) {
+                var actionText = document.createElement("span");
+                actionText.className = "app-bar-action action-text";
+                actionText.innerHTML = appBarText;
+                navigationButtonsDiv.appendChild(actionText);
+            }
+
             photoButton = document.createElement("span");
             photoButton.className = "app-bar-action action-photo";
             navigationButtonsDiv.appendChild(photoButton);
@@ -455,10 +478,28 @@ module.exports = {
 
             photoButton.addEventListener("click", capturePhoto, false);
 
-            if (getAutoShutter() &&
-                navigationButtonsDiv && navigationButtonsDiv.style) {
-                navigationButtonsDiv.style.display = "none";
+            if (getAutoShutter()) {
                 cancelPromise = WinJS.Promise.timeout(60000).then(cancelPreview);
+            }
+            var appBarSize = getAppBarSize();
+            if (appBarSize && appBarSize > 48) {
+                if (navigationButtonsDiv.style) {
+                    navigationButtonsDiv.style.height = appBarSize.toString() + "px";
+                }
+                var appBarActionSize = appBarSize - 8;
+                var appBarFontSize = appBarActionSize - 22;
+                if (closeButton.style) {
+                    closeButton.style.height = appBarActionSize.toString() + "px";
+                    closeButton.style.fontSize = appBarFontSize.toString() + "px";
+                }
+                if (photoButton.style) {
+                    photoButton.style.height = appBarActionSize.toString() + "px";
+                    photoButton.style.fontSize = appBarFontSize.toString() + "px";
+                }
+                //if (settingsButton.style) {
+                //    settingsButton.style.height = appBarSize.toString() + "px";
+                //    settingsButton.style.fontSize = appBarFontSize.toString() + "px";
+                //}
             }
 
             [capturePreview, navigationButtonsDiv].forEach(function (element) {
@@ -752,7 +793,10 @@ module.exports = {
                     WinJS.Promise.timeout(CHECK_PLAYING_TIMEOUT).then(function () {
                         resizePreview();
                         if (getAutoShutter()) {
-                            WinJS.Promise.timeout(getAutoShutter()).then(function() {
+                            WinJS.Promise.timeout(getAutoShutter()).then(function () {
+                                if (photoButton && photoButton.style) {
+                                    photoButton.style.display = "none";
+                                }
                                 capturePhoto();
                             });
                         }
