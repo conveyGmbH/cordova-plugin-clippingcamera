@@ -390,6 +390,12 @@ module.exports = {
             }
             return null;
         }
+        function getRotationDegree() {
+            if (CameraUI.openCameraCallArgs.args && CameraUI.openCameraCallArgs.args[8]) {
+                return CameraUI.openCameraCallArgs.args[8];
+            }
+            return null;
+        }
 
         function updatePreviewForRotation(evt) {
             var resizeLater = function() {
@@ -408,6 +414,11 @@ module.exports = {
 
             // Lookup up the rotation degrees.
             var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
+
+            var rotAdd = getRotationDegree();
+            if (rotAdd) {
+                rotDegree = (rotDegree + rotAdd) % 360;
+            }
 
             capture.setPreviewRotation(degreesToRotation(rotDegree));
             return resizeLater();
@@ -538,6 +549,11 @@ module.exports = {
                 var currentOrientation = displayInformation.currentOrientation;
                 // Lookup up the rotation degrees.
                 var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
+                var rotAdd = getRotationDegree();
+                if (rotAdd) {
+                    rotDegree = (rotDegree + rotAdd) % 360;
+                }
+
                 var videoWidth = videoProps.width;
                 var videoHeight = videoProps.height;
                 if (videoWidth > 0 && videoHeight > 0) {

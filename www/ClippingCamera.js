@@ -26,8 +26,9 @@
             var autoShutter = options.autoShutter;
             var appBarSize = options.appBarSize;
             var appBarText = options.appBarText;
+            var rotationDegree = options.rotationDegree;
 
-            var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter, appBarSize, appBarText];
+            var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter, appBarSize, appBarText, rotationDegree];
 
             exec(success, failure, "ClippingCamera", "openCamera", args);
         }
