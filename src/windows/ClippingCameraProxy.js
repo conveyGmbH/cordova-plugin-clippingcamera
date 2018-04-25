@@ -133,7 +133,7 @@ function CameraUI () {
     this._props = new Windows.Foundation.Collections.PropertySet();
     this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E70}", 50);
     this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E71}", false);
-    this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E72}", false);
+    this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E72}", 0);
     this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E79}", false);
     this._props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E80}", "");
 }
@@ -521,10 +521,16 @@ module.exports = {
         function addEffectToImageStream(bDoCapture) {
             if (camera) {
                 var props = camera._props;
+                var rotation = getRotationDegree();
+                if (rotation) {
+                    rotation = 360 - (rotation % 360);
+                } else {
+                    rotation = 0;
+                }
 
                 props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E70}", getQuality());
                 props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E71}", getConvertToGrayscale());
-                props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E72}", getDontClip());
+                props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E72}", rotation);
 
                 props.insert("{698649BE-8EAE-4551-A4CB-2FA79A4E1E79}", bDoCapture);
 

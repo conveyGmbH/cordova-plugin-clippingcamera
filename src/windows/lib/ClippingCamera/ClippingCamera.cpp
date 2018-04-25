@@ -79,7 +79,7 @@ ImageClipping::ImageClipping() :
 	m_imageWidthInPixels(0), m_imageHeightInPixels(0), m_cbImageSize(0),
 	m_bStreamingInitialized(false),
 	m_pAttributes(NULL), m_pSetting(NULL),
-	m_bDoClip(false), m_nQuality(100), m_bConvertToGrayscale(false)
+	m_bDoClip(false), m_nQuality(100), m_bConvertToGrayscale(false), m_nRotation(0)
 {
     InitializeCriticalSectionEx(&m_critSec, 3000, 0);
 }
@@ -122,21 +122,6 @@ HRESULT ImageClipping::SetProperties(ABI::Windows::Foundation::Collections::IPro
 	ComPtr<ABI::Windows::Foundation::IPropertyValue> spPropVal;
 	ComPtr<IInspectable> spInsp;
 
-	// bool bDoCapture
-	WindowsCreateString(L"{698649BE-8EAE-4551-A4CB-2FA79A4E1E79}", 38, &key);
-	m_pSetting->HasKey(key, &found);
-    if (found) {
-		m_pSetting->Lookup(key, spInsp.ReleaseAndGetAddressOf());
-        hr = spInsp.As(&spPropVal);
-        if (hr != S_OK)  {
-            return hr;
-        }
-        hr = spPropVal->GetBoolean(&m_bDoClip);
-        if (hr != S_OK) {
-            return hr;
-        }
-    }
-
 	// INT32 quality
 	WindowsCreateString(L"{698649BE-8EAE-4551-A4CB-2FA79A4E1E70}", 38, &key);
 	m_pSetting->HasKey(key, &found);
@@ -166,6 +151,36 @@ HRESULT ImageClipping::SetProperties(ABI::Windows::Foundation::Collections::IPro
 			return hr;
 		}
 	}
+
+	// INT32 rotation
+	WindowsCreateString(L"{698649BE-8EAE-4551-A4CB-2FA79A4E1E72}", 38, &key);
+	m_pSetting->HasKey(key, &found);
+	if (found) {
+		m_pSetting->Lookup(key, spInsp.ReleaseAndGetAddressOf());
+		hr = spInsp.As(&spPropVal);
+		if (hr != S_OK) {
+			return hr;
+		}
+		hr = spPropVal->GetUInt32(&m_nRotation);
+		if (hr != S_OK) {
+			return hr;
+		}
+	}
+
+	// bool bDoCapture
+	WindowsCreateString(L"{698649BE-8EAE-4551-A4CB-2FA79A4E1E79}", 38, &key);
+	m_pSetting->HasKey(key, &found);
+    if (found) {
+		m_pSetting->Lookup(key, spInsp.ReleaseAndGetAddressOf());
+        hr = spInsp.As(&spPropVal);
+        if (hr != S_OK)  {
+            return hr;
+        }
+        hr = spPropVal->GetBoolean(&m_bDoClip);
+        if (hr != S_OK) {
+            return hr;
+        }
+    }
 
 	return hr;
 }
@@ -1587,7 +1602,14 @@ BOOL ImageClipping::RectifyAndCut(std::vector<cv::Point2f> approx)
 				// apply perspective transformation
 				warpPerspective(m_prevImage, result, transmtx, result.size());
 
-				m_prevImage = result;
+
+				if (m_nRotation) {
+					cv::Point2f pt(result.cols/2.0, result.rows/2.0);
+					cv::Mat r = getRotationMatrix2D(pt, m_nRotation*1.0, 1.0);
+					warpAffine(result, m_prevImage, r, cv::Size(result.cols, result.rows));
+				} else {
+					m_prevImage = result;
+				}
 			}
 			ret = true;
 		}

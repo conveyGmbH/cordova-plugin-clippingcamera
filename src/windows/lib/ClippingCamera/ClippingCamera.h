@@ -237,6 +237,7 @@ private:
 	boolean			            m_bDoClip;
 	UINT32						m_nQuality;
 	boolean			            m_bConvertToGrayscale;
+	UINT32						m_nRotation;
 
     // Streaming
 	BOOL                        m_bStreamingInitialized;
