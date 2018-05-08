@@ -13,20 +13,26 @@
  */
 
     var clippingCamera = {
-        getPicture: function(success, failure, options){
+        getPicture: function (success, failure, options) {
+            function toInt(value) {
+                if (typeof value === "string") {
+                    return parseInt(value);
+                }
+                return value;
+            }
             argscheck.checkArgs('fFO', 'ClippingCamera.getPicture', arguments);
             options = options || {};
             var getValue = argscheck.getValue;
 
-            var quality = getValue(options.quality, 100);
+            var quality = toInt(getValue(options.quality, 100));
             var convertToGrayscale = !!options.convertToGrayscale;
             var dontClip = !!options.dontClip;
-            var maxResolution = options.maxResolution;
+            var maxResolution = toInt(options.maxResolution);
             var aspectRatio = options.aspectRatio;
-            var autoShutter = options.autoShutter;
-            var appBarSize = options.appBarSize;
+            var autoShutter = toInt(options.autoShutter);
+            var appBarSize = toInt(options.appBarSize);
             var appBarText = options.appBarText;
-            var rotationDegree = options.rotationDegree;
+            var rotationDegree = toInt(options.rotationDegree);
 
             var args = [quality, convertToGrayscale, dontClip, maxResolution, aspectRatio, autoShutter, appBarSize, appBarText, rotationDegree];
 
@@ -34,4 +40,5 @@
         }
     };
     module.exports = clippingCamera;
+
 
