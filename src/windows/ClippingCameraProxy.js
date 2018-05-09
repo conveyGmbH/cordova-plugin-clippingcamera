@@ -397,13 +397,13 @@ module.exports = {
             return null;
         }
 
+        function resizeLater() {
+            WinJS.Promise.timeout(50).then(function () {
+                resizePreview();
+            });
+            return WinJS.Promise.as();
+        }
         function updatePreviewForRotation(evt) {
-            var resizeLater = function() {
-                WinJS.Promise.timeout(50).then(function() {
-                    resizePreview();
-                });
-                return WinJS.Promise.as();
-            }
             if (!capture) {
                 return resizeLater();
             }
@@ -415,14 +415,11 @@ module.exports = {
             // Lookup up the rotation degrees.
             var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
 
-            var rotAdd = getRotationDegree();
-            if (rotAdd) {
-                rotDegree = (rotDegree + rotAdd) % 360;
-            }
-
             capture.setPreviewRotation(degreesToRotation(rotDegree));
             return resizeLater();
         }
+
+
         function clickPreview() {
             focus();
         }
@@ -555,10 +552,6 @@ module.exports = {
                 var currentOrientation = displayInformation.currentOrientation;
                 // Lookup up the rotation degrees.
                 var rotDegree = videoPreviewRotationLookup(currentOrientation, previewMirroring);
-                var rotAdd = getRotationDegree();
-                if (rotAdd) {
-                    rotDegree = (rotDegree + rotAdd) % 360;
-                }
 
                 var videoWidth = videoProps.width;
                 var videoHeight = videoProps.height;
@@ -578,6 +571,11 @@ module.exports = {
                     var top = Math.floor((heightFrame - height) / 2);
 
                     if (heightFrame > 0 && height > 0) {
+                        var rotAdd = getRotationDegree();
+                        if (rotAdd) {
+                            rotAdd = rotAdd % 360;
+                            capturePreview.style.transform = "rotate(" + rotAdd.toString() + "deg)";
+                        }
                         //console.log("width=" + width + " height=" + height + " left=" + left + " top=" + top);
                         capturePreview.style.left = left.toString() + "px";
                         capturePreview.style.top = top.toString() + "px";
@@ -787,7 +785,7 @@ module.exports = {
                 resizePreview();
                 disableZoomAndScroll();
 
-                return setupFocus(captureSettings.capture.videoDeviceController.focusControl)
+                return setupFocus(capture.videoDeviceController.focusControl)
                 .then(function () {
                     Windows.Graphics.Display.DisplayInformation.getForCurrentView().addEventListener("orientationchanged", updatePreviewForRotation, false);
                     return updatePreviewForRotation();
