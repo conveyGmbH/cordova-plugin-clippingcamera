@@ -41,12 +41,9 @@
     margin: 0 20px;
     font-family: "Segoe UI Symbol";
     color: white;
-    font-size: 24px;
+    font-size: 32px;
     text-align: center;
     cursor: default;
-}
-.action-photo {
-    font-size: 32px;
 }
 
 .action-text {
@@ -56,6 +53,14 @@
     bottom: 20px;
 }
 
+.action-photo {
+    display: block;
+    right: 0;
+}
+.action-close {
+    display: block;
+    left: 0;
+}
 @media all and (orientation: landscape) {
     /*
     .app-bar-action {
@@ -65,21 +70,6 @@
         margin-top: 22px;
     }
     */
-    .action-photo {
-        display: block;
-        right: 0;
-    }
-    .action-close {
-        font-size: 32px;
-        display: block;
-        left: 0;
-    }
-}
-
-@media (max-width:499px) {
-    .action-close {
-        display: none;
-    }
 }
 
 .action-close::before {
@@ -115,4 +105,10 @@
 
 .no-scroll {
     overflow: hidden;
+}
+
+@media (max-width:499px) {
+    .action-close {
+        display: none;
+    }
 }

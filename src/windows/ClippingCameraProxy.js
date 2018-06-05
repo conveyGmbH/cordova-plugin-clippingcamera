@@ -489,26 +489,6 @@ module.exports = {
             if (getAutoShutter()) {
                 cancelPromise = WinJS.Promise.timeout(60000).then(cancelPreview);
             }
-            var appBarSize = getAppBarSize();
-            if (appBarSize && appBarSize > 48) {
-                if (navigationButtonsDiv.style) {
-                    navigationButtonsDiv.style.height = appBarSize.toString() + "px";
-                }
-                var appBarActionSize = appBarSize - 8;
-                var appBarFontSize = appBarActionSize - 22;
-                if (closeButton.style) {
-                    closeButton.style.height = appBarActionSize.toString() + "px";
-                    closeButton.style.fontSize = appBarFontSize.toString() + "px";
-                }
-                if (photoButton.style) {
-                    photoButton.style.height = appBarActionSize.toString() + "px";
-                    photoButton.style.fontSize = appBarFontSize.toString() + "px";
-                }
-                //if (settingsButton.style) {
-                //    settingsButton.style.height = appBarSize.toString() + "px";
-                //    settingsButton.style.fontSize = appBarFontSize.toString() + "px";
-                //}
-            }
 
             [capturePreview, navigationButtonsDiv].forEach(function (element) {
                 capturePreviewFrame.appendChild(element);
@@ -583,6 +563,29 @@ module.exports = {
                         capturePreview.style.height = height.toString() + "px";
                     }
                 }
+            }
+            var appBarSize = getAppBarSize();
+            if (appBarSize && appBarSize > 48) {
+                if (navigationButtonsDiv && navigationButtonsDiv.style) {
+                    navigationButtonsDiv.style.height = appBarSize.toString() + "px";
+                }
+                var appBarActionSize = appBarSize - 8;
+                var appBarFontSize = appBarActionSize - 22;
+                if (closeButton && closeButton.style) {
+                    closeButton.style.width = appBarActionSize.toString() + "px";
+                    closeButton.style.height = appBarActionSize.toString() + "px";
+                    closeButton.style.fontSize = appBarFontSize.toString() + "px";
+                }
+                if (photoButton && photoButton.style) {
+                    photoButton.style.width = appBarActionSize.toString() + "px";
+                    photoButton.style.height = appBarActionSize.toString() + "px";
+                    photoButton.style.fontSize = appBarFontSize.toString() + "px";
+                }
+                //if (settingsButton && settingsButton.style) {
+                //    settingsButton.style.width = appBarSize.toString() + "px";
+                //    settingsButton.style.height = appBarSize.toString() + "px";
+                //    settingsButton.style.fontSize = appBarFontSize.toString() + "px";
+                //}
             }
         }
 
