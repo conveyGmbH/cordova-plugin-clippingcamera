@@ -1,4 +1,4 @@
-﻿.camera-ui-wrap {
+﻿.clipping-camera-ui-wrap {
     margin: 0;
     padding: 0;
     outline: 0;
@@ -15,7 +15,7 @@
     user-select: none;
 }
 
-.camera-ui-preview {
+.clipping-camera-ui-preview {
     width: 100%;
     height: auto;
     position: absolute;
@@ -23,7 +23,7 @@
     left: 0;
 }
 
-.camera-ui-app-bar {
+.clipping-camera-ui-app-bar {
     height: 48px;
     width: 100%;
     padding-top: 4px;
@@ -35,7 +35,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 
-.app-bar-action {
+.clipping-app-bar-action {
     width: 40px;
     height: 40px;
     margin: 0 20px;
@@ -46,55 +46,57 @@
     cursor: default;
 }
 
-.action-text {
+.clipping-action-text {
     display: block;
     position: absolute;
     width: 100%;
     bottom: 20px;
 }
 
-.action-photo {
+.clipping-action-photo {
     display: block;
+    position: absolute;
     right: 0;
 }
-.action-close {
+.clipping-action-close {
     display: block;
+    position: absolute;
     left: 0;
 }
 @media all and (orientation: landscape) {
     /*
-    .app-bar-action {
+    .clipping-app-bar-action {
         float: right;
     }
-    .action-close, .action-settings {
+    .clipping-action-close, .clipping-action-settings {
         margin-top: 22px;
     }
     */
 }
 
-.action-close::before {
+.clipping-action-close::before {
     content: "\E0BA";
     /* close icon is larger so we re-size it to fit other icons */
 }
-.action-close:hover::before {
+.clipping-action-close:hover::before {
     content: "\E2A8";
     color: gray;
 }
 
-.action-settings::before {
+.clipping-action-settings::before {
     content: "\E15E";
     /* close icon is larger so we re-size it to fit other icons */
 }
-.action-settings:hover::before {
+.clipping-action-settings:hover::before {
     content: "\E15E";
     color: gray;
 }
 
-.action-photo::before {
+.clipping-action-photo::before {
     content: "\E114";
     /* close icon is larger so we re-size it to fit other icons */
 }
-.action-photo:hover::before {
+.clipping-action-photo:hover::before {
     content: "\E114";
     color: gray;
 }
@@ -108,7 +110,7 @@
 }
 
 @media (max-width:499px) {
-    .action-close {
+    .clipping-action-close {
         display: none;
     }
 }

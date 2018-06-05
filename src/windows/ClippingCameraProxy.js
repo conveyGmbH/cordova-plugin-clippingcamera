@@ -447,37 +447,37 @@ module.exports = {
             document.head.appendChild(capturePreviewFrameStyle);
 
             capturePreviewFrame = document.createElement("div");
-            capturePreviewFrame.className = "camera-ui-wrap";
+            capturePreviewFrame.className = "clipping-camera-ui-wrap";
 
             capturePreview = document.createElement("video");
-            capturePreview.className = "camera-ui-preview";
+            capturePreview.className = "clipping-camera-ui-preview";
             capturePreview.addEventListener("click", clickPreview, false);
             window.addEventListener("resize", resizePreview, false);
 
             navigationButtonsDiv = document.createElement("div");
-            navigationButtonsDiv.className = "camera-ui-app-bar";
+            navigationButtonsDiv.className = "clipping-camera-ui-app-bar";
             navigationButtonsDiv.onclick = function (e) {
                 e.cancelBubble = true;
             };
 
             closeButton = document.createElement("span");
-            closeButton.className = "app-bar-action action-close";
+            closeButton.className = "clipping-app-bar-action clipping-action-close";
             navigationButtonsDiv.appendChild(closeButton);
 
             var appBarText = getAppBarText();
             if (appBarText) {
                 var actionText = document.createElement("span");
-                actionText.className = "app-bar-action action-text";
+                actionText.className = "clipping-app-bar-action clipping-action-text";
                 actionText.innerHTML = appBarText;
                 navigationButtonsDiv.appendChild(actionText);
             }
 
             photoButton = document.createElement("span");
-            photoButton.className = "app-bar-action action-photo";
+            photoButton.className = "clipping-app-bar-action clipping-action-photo";
             navigationButtonsDiv.appendChild(photoButton);
 
             //settingsButton = document.createElement("span");
-            //settingsButton.className = "app-bar-action action-settings";
+            //settingsButton.className = "clipping-app-bar-action clipping-action-settings";
             //navigationButtonsDiv.appendChild(settingsButton);
 
             CameraUI.captureCancelled = false;
