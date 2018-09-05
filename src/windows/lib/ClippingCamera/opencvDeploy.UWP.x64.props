@@ -25,6 +25,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)$(Platform)\$(Configuration)\ClippingCamera\" />
+    <Folder Include="$(MSBuildThisFileDirectory)$(Platform)\$(Configuration)\ClippingCamera.UWP\" />
   </ItemGroup>
 </Project>

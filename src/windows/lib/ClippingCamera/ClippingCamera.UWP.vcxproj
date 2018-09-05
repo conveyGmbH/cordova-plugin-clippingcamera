@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
       <Configuration>Debug</Configuration>
@@ -29,8 +29,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA69218F-DA5C-4D14-A78D-21A9E4DEC671}</ProjectGuid>
     <Keyword>WindowsRuntimeComponent</Keyword>
-    <RootNamespace>ClippingCamera</RootNamespace>
-    <ProjectName>ClippingCamera</ProjectName>
+    <RootNamespace>ClippingCamera.UWP</RootNamespace>
+    <ProjectName>ClippingCamera.UWP</ProjectName>
+    <TargetName>ClippingCamera</TargetName>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Store</ApplicationType>
@@ -42,35 +43,35 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
@@ -146,10 +147,11 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -173,7 +175,7 @@
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -195,10 +197,11 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <WindowsMetadataFile>$(OutDir)$(TargetName).winmd</WindowsMetadataFile>
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -220,10 +223,11 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -243,11 +247,11 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <ModuleDefinitionFile>ClippingCamera.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -272,10 +276,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <WindowsMetadataFile>$(OutDir)$(TargetName).winmd</WindowsMetadataFile>
     </Link>
     <CustomBuildStep>
       <Command>mdmerge -metadata_dir "$(WindowsSDK_MetadataFoundationPath)\..\..\..\UnionMetadata" -o "$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)" -i "$(MSBuildProjectDirectory)" -v -partial</Command>
-      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd</Outputs>
+      <Outputs>$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd</Outputs>
     </CustomBuildStep>
     <Midl>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
@@ -327,13 +332,13 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemGroup>
-    <_MdMergeOutput Condition="'$(Platform)' == 'Win32'" Include="$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd" />
-    <_MdMergeOutput Condition="'$(Platform)' != 'Win32'" Include="$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(ProjectName).winmd" />
+    <_MdMergeOutput Condition="'$(Platform)' == 'Win32'" Include="$(ProjectDir)$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd" />
+    <_MdMergeOutput Condition="'$(Platform)' != 'Win32'" Include="$(ProjectDir)$(Platform)\$(Configuration)\$(MSBuildProjectName)\$(TargetName).winmd" />
   </ItemGroup>
   <Target Name="CopyWinmdArtifactsOutputGroup" Returns="@(CopyWinmdArtifactsOutputGroupOutputs)">
     <ItemGroup>
       <CopyWinmdArtifactsOutputGroupOutputs Include="@(_MdMergeOutput)">
-        <TargetPath>$(ProjectName).winmd</TargetPath>
+        <TargetPath>ClippingCamera.winmd</TargetPath>
         <Implementation>$(TargetName)$(TargetExt)</Implementation>
       </CopyWinmdArtifactsOutputGroupOutputs>
     </ItemGroup>
